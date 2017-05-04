@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 import { Card, CardSection, Spinner, Button, Input } from './common'
 import axios from 'axios';
 
 class LoginForm extends Component {
+    constructor(props) {
+        super(props);
+        // this.onButtonPress = this.onButtonPress.bind(this);
+    }
     state = { email: '', password: '', errorText: '', loading: false };
     onButtonPress() {
+        // console.log(this.props);
+        const { navigate } = this.props.navigator;
         const { email, password } = this.state;
         this.setState({ errorText: '', loading: true });
         
@@ -13,8 +20,12 @@ class LoginForm extends Component {
             email: email,
             password: password
         }).then(response => {
-            console.log(response);
             this.setState({ errorText: response.data, loading: false });
+            if(response.data !== "Authentication Failed") {
+                this.setState({ errorText: ''});
+                navigate('Home');
+            }
+            // console.log(response);
         })
         .catch(response => {
             console.log(response);
@@ -27,7 +38,7 @@ class LoginForm extends Component {
             return <Spinner size='small' />;
         }
         return (
-            <Button onPress={this.onButtonPress.bind(this)}> Log In</Button>
+            <Button onPress={this.onButtonPress.bind(this)}>Log In</Button>
         )
     }
 
@@ -40,6 +51,8 @@ class LoginForm extends Component {
     }
 
     render() {
+        // console.log(this.props.navigation);
+        // const { navigate } = this.props.navigation;
         return (
             <Card>
                 <CardSection>
